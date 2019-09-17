@@ -2,8 +2,13 @@ package boot
 
 import java.io.File
 
-class ConsoleApp {
+import search.SearchEngine
+import wiring.ProductionModule
+import scala.collection.JavaConverters._
+
+class ConsoleApp(searchEngine: SearchEngine) {
   def listen(directory: File): Unit = {
+    searchEngine.load(directory.listFiles().toList)
     while(true) {
       println("search> ")
       val words = scala.io.StdIn.readLine()
@@ -18,6 +23,6 @@ object ConsoleApp extends App {
   } else {
     val directory = new File(args.head)
     println(s"You will search in directory: ${directory.getAbsolutePath} in files: ${directory.list.toList}")
-    new ConsoleApp().listen(directory)
+    ProductionModule.consoleApp.listen(directory)
   }
 }
