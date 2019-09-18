@@ -7,16 +7,18 @@ import search.SearchEngineSpec._
 
 class SearchEngineSpec extends FlatSpec with MustMatchers {
   it must "load file content" in new Fixture(fileA :: Nil) {
-    searchEngine.getFilesContent("fileA.txt").toSet mustBe Map(
-      1 -> "obla",
-      2 -> "di",
-      3 -> "obla",
-      4 -> "da,",
-      5 -> "life",
-      6 -> "goes",
-      7 -> "on,",
-      8 -> "bra"
-    ).toSet
+    searchEngine.getFilesContent("fileA.txt") mustBe
+      Set("obla", "di", "obla", "da,", "life", "goes", "on,", "bra")
+  }
+
+  it must "rank files regarding to words matching" in new Fixture(fileA :: fileB :: fileC :: Nil) {
+    searchEngine.rankFor(Set("bra", "not", "obla")) mustBe
+      List("fileA.txt"-> 66, "fileB.txt" -> 33)
+
+    searchEngine.rankFor(Set("Be", "brave")) mustBe empty
+
+    searchEngine.rankFor(Set("dee,", "da,", "aa,", "da")) mustBe
+      List("fileC.txt" -> 100, "fileA.txt" -> 25, "fileB.txt" -> 25)
   }
 
   class Fixture(files: List[File]) {
@@ -31,4 +33,16 @@ object SearchEngineSpec {
     close
   }
   val fileA = new File("target/fileA.txt")
+
+  new PrintWriter("target/fileB.txt") {
+    write("Oompa loompa doompety da\nIf you're not greedy, you will go far")
+    close
+  }
+  val fileB = new File("target/fileB.txt")
+
+  new PrintWriter("target/fileC.txt") {
+    write("Meri mehbooba, meri mehbooba\nZara tasveer se tu nikalke samne aa, meri mehbooba\n\nObla-dee, dee, dee, obla-da, da, da\nObla-doo, doo, doo, what to do")
+    close
+  }
+  val fileC = new File("target/fileC.txt")
 }

@@ -4,15 +4,22 @@ import java.io.File
 
 import search.SearchEngine
 import wiring.ProductionModule
-import scala.collection.JavaConverters._
 
 class ConsoleApp(searchEngine: SearchEngine) {
-  def listen(directory: File): Unit = {
+
+  def loadToEngine(directory: File): Unit =
     searchEngine.load(directory.listFiles().toList)
-    while(true) {
+
+  def listen(): Unit = {
+    var isListening = true
+    while(isListening) {
       println("search> ")
-      val words = scala.io.StdIn.readLine()
-      println(s"You have just written: $words")
+      scala.io.StdIn.readLine() match {
+        case words if words == ":quit" =>
+          isListening = false
+        case words =>
+          searchEngine.printRankFor(words.split(" ").toList)
+      }
     }
   }
 }
@@ -22,7 +29,8 @@ object ConsoleApp extends App {
     println("Missing directory argument, e.g. invocation: `scala src/main/scala/boot/ConsoleApp src/test/resources`")
   } else {
     val directory = new File(args.head)
-    println(s"You will search in directory: ${directory.getAbsolutePath} in files: ${directory.list.toList}")
-    ProductionModule.consoleApp.listen(directory)
+    println(s"${directory.list.length} files read in directory ${directory.getAbsolutePath}")
+    ProductionModule.consoleApp.loadToEngine(directory)
+    ProductionModule.consoleApp.listen()
   }
 }

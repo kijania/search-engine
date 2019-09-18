@@ -1,12 +1,33 @@
-Here will be description of building application with sbt and running it:
-scala src/main/scala/boot/ConsoleApp src/test/resources
+To run application write a command with example directory path:
 
-Also some overview of main choices and potential future improvements
+sbt "run src/test/resources"
+
+Now you will be able to search for the given words
+
+to quit searching type :quit
+
+--------------------------------
+
+Solution is searching for unique input words matching unique words from the files.
+
+Rank is a ratio of the number of matching unique input words to all unique input words.
+
+I consider all punctuation marks as a part of the words same as letters.
+
+--------------------------------
 
 TODOs:
-Take care of all specific symbols in the text like commas, dots etc
-Block querying when loading file, e.g. by putting in memory map inside Akka Actor
-Load documents from files chunk by chunk
-Replace in memory database with standalone cache to separate memory used by database and by application
-Use timeouts in searching, to prevent blocking threads
-Prepare second database instance, and load documents to database instances one by one, to have always one available for searching queries
+
+- Take care of all specific symbols in the text like commas, dots etc
+
+- Consider number of words in the given input and in the files
+
+- Block querying when loading file, e.g. by putting in memory map inside Akka Actor
+
+- Load documents from files chunk by chunk
+
+- Replace in memory database with standalone cache to separate memory used by database and by application
+
+- Use timeouts in searching, to prevent blocking threads
+
+- Prepare second database instance, and load documents to database instances one by one, to have always one available for searching queries
